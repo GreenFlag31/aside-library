@@ -1,0 +1,17 @@
+.ngx-category {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6rem;
+  padding: 0.6rem;
+  cursor: pointer;
+  text-transform: capitalize;
+  overflow-x: hidden;
+  user-select: none;
+}
+.ngx-title {
+  text-align: center;
+  padding: 0.6rem;
+  overflow-x: hidden;
+  user-select: none;
+}
