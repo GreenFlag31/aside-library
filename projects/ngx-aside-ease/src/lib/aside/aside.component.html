@@ -15,7 +15,9 @@
 
       <div class="ngx-aside-content" #asideContent>
         <ng-content></ng-content>
+        @if (enableMarker) {
         <span class="ngx-aside-marker" #asideMarker></span>
+        }
       </div>
     </div>
 
@@ -34,7 +36,7 @@
         />
       </svg>
     </span>
-    } @if (enableResizer) {
+    } @if (enableResize) {
     <div class="ngx-resizer-container">
       <span class="ngx-resizer" #resizer></span>
     </div>

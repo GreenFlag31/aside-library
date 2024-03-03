@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AsideComponent } from '../public-api';
 import { Subject } from 'rxjs';
+import { Item } from './aside/interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AsideService {
+  internalOnSelectionChange = new Subject<Item>();
   onSelectionChange = new Subject<HTMLElement>();
   aside!: AsideComponent;
 
@@ -15,7 +17,7 @@ export class AsideService {
     this.aside = instance;
   }
 
-  toggleAsideVisibility() {
+  toggleVisibility() {
     if (this.aside.asideIsTotallyHiden) {
       this.aside.setAsideFullWidth();
     } else {

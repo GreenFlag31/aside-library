@@ -52,8 +52,9 @@
     } @case ('preferences') {
     <div class="preferences">
       <p>
-        User preferences are kept and stored in localStorage. Resize the aside
-        panel and reload the page to see effects.
+        User preferences about the aside width are kept and stored in
+        localStorage. Resize the aside panel and reload the page to see effects.
+        The URL can be updated through an option (active in this configuration).
       </p>
     </div>
     } @case ('performant') {
@@ -67,8 +68,8 @@
     } @case ('responsive') {
     <div class="responsive">
       <p>
-        This library is responsive, at the breakpoint you want. Resize the
-        window to see effects. The AsideService offers a method to toggle the
+        This library is responsive, at the breakpoint you have set. Resize the
+        window to see effects. The AsideService exposes a method to toggle the
         aside panel visibility, partially or totally. <br />
         Calling this method will either trigger a partial or full width panel,
         depending on the breakpoint set.
@@ -82,9 +83,7 @@
       <p>
         Users have full control on aside panel visibility. Control a total
         show/hide, enable resize through touch and mouse control, or click on
-        the resize arrow.
-      </p>
-      <p>
+        the resize arrow.<br />
         Don't hesitate to override the default styles classes (inspect the DOM
         to find the corresponding classes) with your creativity. Classes have
         been prefixed with 'ngx-*'. Set view encapsulation to 'none' in your

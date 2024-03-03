@@ -20,6 +20,10 @@ export class AsideCategoryDirective {
 
   @HostListener('click')
   onItemClick() {
+    this.asideService.internalOnSelectionChange.next({
+      element: this.native,
+      animate: true,
+    });
     this.asideService.onSelectionChange.next(this.native);
   }
 }

@@ -29,6 +29,6 @@ export class AppComponent implements OnInit {
   }
 
   onVisibilityToggle() {
-    this.asideService.toggleAsideVisibility();
+    this.asideService.toggleVisibility();
   }
 }
