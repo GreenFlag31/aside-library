@@ -3,8 +3,8 @@
     class="ngx-aside-wrapper"
     [ngClass]="{
       'not-open': !asideIsOpen,
-      'total-hide': asideTotalHide,
-      'full-width': asideFullWidthResponsive
+      'responsive-mode': responsiveMode,
+      'full-width': asideFullWidthResponsive,
     }"
     (mouseenter)="onMouseEnter()"
     (mouseleave)="onMouseLeave()"
@@ -26,7 +26,8 @@
       class="ngx-collapsable-icon"
       [ngClass]="{
         show: showCollapsableIcon || !asideIsOpen,
-        'not-open': !asideIsOpen
+        'not-open': !asideIsOpen,
+      'responsive-mode': responsiveMode,
       }"
       (click)="onCollapseBtnClick()"
     >
@@ -38,7 +39,14 @@
     </span>
     } @if (enableResize) {
     <div class="ngx-resizer-container">
-      <span class="ngx-resizer" #resizer></span>
+      <span
+        class="ngx-resizer"
+        [ngClass]="{
+          'full-width': asideFullWidthResponsive,
+      'responsive-mode': responsiveMode,
+        }"
+        #resizer
+      ></span>
     </div>
     }
   </div>

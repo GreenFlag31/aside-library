@@ -10,6 +10,9 @@
 .content-page {
   padding: 1rem;
 }
+.ngx-category.active i {
+  color: gold;
+}
 .content-page h1 {
   margin-bottom: 3rem;
   text-align: center;

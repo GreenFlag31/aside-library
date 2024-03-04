@@ -27,14 +27,17 @@ import { ActivatedRoute, Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() minWidth = 30;
+  @Input() minVisible = 30;
+  @Input() minWidth = 250;
   @Input() width = 300;
   @Input() maxWidth = '50';
   @Input() responsiveBreakpoint = 800;
   @Input() displayCollapsableIcon = true;
   @Input() asideAnimation = true;
-  @Input() contentAnimation = true;
+  @Input() asideAnimationTiming = '0.3s ease-out';
+  // @Input() contentAnimation = true;
   @Input() enableResize = true;
+  @Input() resizerColor = '#0095be';
   @Input() enableMarker = true;
   @Input() markerAnimation = true;
   @Input() markerAnimationTiming = '0.3s ease-out';
@@ -44,7 +47,7 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   userWidth = 0;
   showCollapsableIcon = false;
   asideIsOpen = true;
-  asideTotalHide = false;
+  responsiveMode = false;
   minWidthComp = 0;
   asideContentTop = 0;
   destroy$ = new Subject<void>();
@@ -82,8 +85,8 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.asideContent.nativeElement.getBoundingClientRect().top;
   }
 
-  get asideIsTotallyHiden() {
-    return this.asideTotalHide;
+  get isResponsiveMode() {
+    return this.responsiveMode;
   }
 
   set asideFullWidth(value: boolean) {
@@ -91,14 +94,13 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.asideService.addInstance(this);
-
     this.asideService.internalOnSelectionChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((item) => {
         const { element, animate } = item;
         this.positionMarker(element, animate);
         this.updateUrlTabs(element.innerText.toLowerCase());
+        this.addClassActiveToElement(element);
       });
 
     fromEvent(window, 'resize')
@@ -106,6 +108,40 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(() => {
         this.applyResponsive();
       });
+  }
+
+  /**
+   * Add active class to the element so the user can overload it with custom styles.
+   */
+  addClassActiveToElement(element: HTMLElement) {
+    const prev = this.asideContent.nativeElement.querySelector('.active');
+    prev?.classList.remove('active');
+    element.classList.add('active');
+  }
+
+  /**
+   * Retrieve the previous stored preference or take the width set.
+   * Initialise CSS variables.
+   */
+  ngAfterViewInit() {
+    this.userWidth =
+      parseFloat(localStorage.getItem('user-width') || '') || this.width;
+    this.minWidthComp = this.minWidth || 0.1 * this.userWidth;
+    this.updateMinWidthPercentDiff();
+
+    this.native.style.setProperty('--min-width', `${this.minWidth}px`);
+    this.native.style.setProperty(
+      '--min-width-visible',
+      `${this.minVisible}px`
+    );
+    this.native.style.setProperty('--width', `${this.userWidth}px`);
+    this.native.style.setProperty('--max-width', `${this.maxWidth}vw`);
+
+    this.applyResponsive(false);
+    this.activateParamsUrl();
+    this.selectDefaultItem();
+
+    if (this.enableResize) this.resize();
   }
 
   /**
@@ -137,7 +173,6 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   findTabToActivate(active: string) {
-    // remplace par find
     for (const item of this.items) {
       const text = item.native.innerText.toLowerCase();
 
@@ -149,29 +184,8 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     return null;
   }
 
-  /**
-   * Retrieve the stored preference or take the width set.
-   * Initialise CSS variables.
-   */
-  ngAfterViewInit() {
-    this.userWidth =
-      parseFloat(localStorage.getItem('user-width') || '') || this.width;
-    this.minWidthComp = this.minWidth || 0.1 * this.userWidth;
-    this.updateMinWidthPercentDiff();
-
-    this.native.style.setProperty('--min-width', `${this.minWidthComp}px`);
-    this.native.style.setProperty('--width', `${this.userWidth}px`);
-    this.native.style.setProperty('--max-width', `${this.maxWidth}vw`);
-
-    this.applyResponsive(false);
-    this.activateParamsUrl();
-    this.selectDefaultItem();
-
-    if (this.enableResize) this.resize();
-  }
-
   updateMinWidthPercentDiff() {
-    const minWidthPercentDiff = (this.minWidthComp / this.userWidth - 1) * 100;
+    const minWidthPercentDiff = (this.minVisible / this.userWidth - 1) * 100;
 
     this.native.style.setProperty(
       '--min-width-percent-diff',
@@ -180,24 +194,43 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyResponsive(animate = true) {
-    this.asideTotalHide = window.innerWidth < this.responsiveBreakpoint;
+    this.responsiveMode = window.innerWidth < this.responsiveBreakpoint;
     this.applyAnimations(animate);
 
-    if (this.asideTotalHide) {
+    if (this.responsiveMode) {
       this.native.style.setProperty('--width', '0');
+      this.native.style.setProperty('--min-width-visible', '0');
     } else {
       this.native.style.setProperty('--width', `${this.userWidth}px`);
+      this.native.style.setProperty(
+        '--min-width-visible',
+        `${this.minVisible}px`
+      );
       this.asideFullWidthResponsive = false;
     }
 
     this.cd.markForCheck();
   }
 
+  applyAnimations(animate = true) {
+    // width ${this.asideAnimationTiming}, transform
+
+    if (this.asideAnimation && animate) {
+      this.native.style.transition = `width ${this.asideAnimationTiming}`;
+      this.asideNative.style.transition = `${this.asideAnimationTiming}`;
+      // if (this.responsiveMode) {
+      //   this.asideNative.style.transition = `width ${this.asideAnimationTiming}, padding ${this.asideAnimationTiming}`;
+      // }
+    } else if (!this.asideAnimation && !animate) {
+      this.native.style.transition = 'none';
+      this.asideNative.style.transition = 'none';
+    }
+  }
+
   setAsideFullWidth() {
+    this.asideFullWidthResponsive = !this.asideFullWidthResponsive;
     this.applyAnimations();
 
-    this.asideFullWidthResponsive = !this.asideFullWidthResponsive;
-    this.showCollapsableIcon = !this.asideFullWidthResponsive;
     this.cd.markForCheck();
   }
 
@@ -205,13 +238,15 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.enableMarker) return;
 
     this.asideContentTop = this.asideContentTopValue;
-    const top = element.getBoundingClientRect().top - this.asideContentTop;
+
+    const { top } = element.getBoundingClientRect();
+    const topMarker = top - this.asideContentTop;
 
     this.asideMarker.nativeElement.style.height = element.clientHeight + 'px';
     this.asideMarker.nativeElement.style.transition = animated
       ? `top ${this.markerAnimationTiming}`
       : 'none';
-    this.asideMarker.nativeElement.style.top = `${top}px`;
+    this.asideMarker.nativeElement.style.top = `${topMarker}px`;
   }
 
   /**
@@ -248,6 +283,7 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   resize() {
+    this.resizerNative.style.setProperty('--resizer-color', this.resizerColor);
     this.resizerNative.addEventListener(
       'pointerdown',
       this.onPointerDown.bind(this)
@@ -284,20 +320,18 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  applyAnimations(animate = true) {
-    this.asideNative.style.transition =
-      this.asideAnimation && animate ? '0.3s ease-out' : 'none';
-    this.native.style.transition =
-      this.contentAnimation && animate ? '0.3s ease-out' : 'none';
-  }
-
   onCollapseBtnClick() {
-    this.applyAnimations();
     this.asideIsOpen = !this.asideIsOpen;
+    this.applyAnimations();
     this.cd.markForCheck();
   }
 
+  /**
+   * Display toggle icon on mouse enter
+   * Hide if full width on responsive.
+   */
   onMouseEnter() {
+    // if (this.responsiveMode) return;
     this.showCollapsableIcon = true;
   }
 

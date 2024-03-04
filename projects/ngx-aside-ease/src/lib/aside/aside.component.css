@@ -1,12 +1,13 @@
 :host {
   --min-width-percent-diff: 0;
   --min-width: 0;
+  --min-width-visible: 0;
   --width: 0;
   --max-width: 0;
   width: var(--width);
 }
 :host.not-open {
-  width: var(--min-width);
+  width: var(--min-width-visible);
 }
 .ngx-aside-wrapper {
   min-height: 100vh;
@@ -18,18 +19,22 @@
   transform: translate3d(var(--min-width-percent-diff), 0, 0);
   padding: 1rem 0;
 }
-.ngx-aside-wrapper.total-hide {
-  transform: translate3d(-150%, 0, 0);
+.ngx-aside-wrapper.responsive-mode {
+  /* transform: translate3d(0, 0, 0); */
+  transform: translate3d(-100%, 0, 0);
   position: absolute;
   width: 0;
-}
-.ngx-aside-wrapper.full-width {
-  position: absolute;
-  width: 100%;
   overflow: hidden;
-  z-index: 10;
-  transform: translate3d(0, 0, 0);
+  /* padding: 1rem 0; */
 }
+
+.ngx-aside-wrapper.full-width {
+  transform: translate3d(0, 0, 0);
+  padding: 1rem 0.7rem 0;
+  width: 100%;
+  z-index: 10;
+}
+
 .ngx-aside {
   text-wrap: nowrap;
 }
@@ -59,7 +64,9 @@
   height: 100%;
   cursor: ew-resize;
   touch-action: none;
+  --resizer-color: #0095be;
 }
+
 .ngx-resizer::after {
   content: "";
   position: absolute;
@@ -67,15 +74,18 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #0095be;
   transform: scaleX(0);
   opacity: 0;
   transition: 0.3s;
 }
-.ngx-resizer:hover::after {
+
+.ngx-resizer:not(.full-width):hover::after {
   opacity: 1;
-  background: #0095be;
+  background: var(--resizer-color);
   transform: scaleX(0.3);
+}
+.ngx-resizer.responsive-mode {
+  display: none;
 }
 
 span.ngx-collapsable-icon {
@@ -92,6 +102,10 @@ span.ngx-collapsable-icon {
   transition: opacity 0.3s, right 0.3s;
   opacity: 0;
   z-index: 2;
+}
+
+span.ngx-collapsable-icon.responsive-mode {
+  display: none;
 }
 span.ngx-collapsable-icon svg {
   width: 10px;

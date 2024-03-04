@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AsideComponent } from '../public-api';
+import { AsideContainerComponent } from '../public-api';
 import { Subject } from 'rxjs';
 import { Item } from './aside/interface';
 
@@ -9,19 +9,21 @@ import { Item } from './aside/interface';
 export class AsideService {
   internalOnSelectionChange = new Subject<Item>();
   onSelectionChange = new Subject<HTMLElement>();
-  aside!: AsideComponent;
+  asideContainer!: AsideContainerComponent;
 
   constructor() {}
 
-  addInstance(instance: AsideComponent) {
-    this.aside = instance;
+  addInstance(instance: AsideContainerComponent) {
+    this.asideContainer = instance;
   }
 
   toggleVisibility() {
-    if (this.aside.asideIsTotallyHiden) {
-      this.aside.setAsideFullWidth();
+    const aside = this.asideContainer.aside;
+
+    if (aside.isResponsiveMode) {
+      aside.setAsideFullWidth();
     } else {
-      this.aside.onCollapseBtnClick();
+      aside.onCollapseBtnClick();
     }
   }
 }
