@@ -15,7 +15,7 @@
       <ng-content select="[ngxTitle]"></ng-content>
 
       <div class="ngx-aside-content" #asideContent>
-        <ng-content></ng-content>
+        <ng-content select="[ngxItem]"></ng-content>
         @if (enableMarker) {
         <span class="ngx-aside-marker" #asideMarker></span>
         }
@@ -33,7 +33,11 @@
       }"
       (click)="onCollapseBtnClick()"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 320 512"
+        aria-label="arrow icon"
+      >
         <path
           d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"
         />

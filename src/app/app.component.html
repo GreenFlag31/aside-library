@@ -1,23 +1,23 @@
 <ngx-aside-container>
   <ngx-aside>
     <h3 class="title" ngxTitle>ngx-aside-ease</h3>
-    <div ngxCategory (click)="onItemClick('ngx-aside-ease')">
+    <div ngxItem>
       <p>general</p>
       <i class="fa-regular fa-bookmark"></i>
     </div>
-    <div ngxCategory (click)="onItemClick('preferences')">
+    <div ngxItem>
       <p>preferences</p>
       <i class="fa-regular fa-user"></i>
     </div>
-    <div ngxCategory (click)="onItemClick('performant')">
+    <div ngxItem>
       <p>performant</p>
       <i class="fa-solid fa-angles-right"></i>
     </div>
-    <div ngxCategory [defaultActive]="true" (click)="onItemClick('responsive')">
+    <div ngxItem [defaultActive]="true">
       <p>responsive</p>
       <i class="fa-solid fa-table-columns"></i>
     </div>
-    <div ngxCategory (click)="onItemClick('controlable')">
+    <div ngxItem>
       <p>controlable</p>
       <i class="fa-solid fa-expand"></i>
     </div>
@@ -30,7 +30,7 @@
     <div class="ngx-aside-ease">
       <p class="presentation">
         This library offers a lightweight, performant, and responsive aside,
-        while leaving the styling control to the user. This library multiple
+        while leaving the styling control to the user. This library has multiple
         options and offers a good user experience.
       </p>
       <div class="add-star-container">
@@ -83,7 +83,7 @@
       <p>
         Users have full control on aside panel visibility. Control a total
         show/hide, enable resize through touch and mouse control, or click on
-        the resize arrow.<br />
+        the resize arrow or the toggle method in the service.<br />
         Don't hesitate to override the default styles classes (inspect the DOM
         to find the corresponding classes) with your creativity. Classes have
         been prefixed with 'ngx-*'. Set view encapsulation to 'none' in your

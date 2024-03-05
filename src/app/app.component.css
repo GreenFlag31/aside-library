@@ -10,7 +10,7 @@
 .content-page {
   padding: 1rem;
 }
-.ngx-category.active i {
+.ngx-item.active i {
   color: gold;
 }
 .content-page h1 {

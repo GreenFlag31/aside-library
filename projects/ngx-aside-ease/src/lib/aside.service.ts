@@ -6,7 +6,7 @@ import { Item } from './aside/interface';
 @Injectable({
   providedIn: 'root',
 })
-export class AsideService {
+export class InternalAsideService {
   internalOnSelectionChange = new Subject<Item>();
   onSelectionChange = new Subject<HTMLElement>();
   asideContainer!: AsideContainerComponent;
@@ -17,6 +17,10 @@ export class AsideService {
     this.asideContainer = instance;
   }
 
+  /**
+   * Toggle the panel visibility.
+   * The panel will either open partially or totally, depending on the responsive breakpoint set.
+   */
   toggleVisibility() {
     const aside = this.asideContainer.aside;
 

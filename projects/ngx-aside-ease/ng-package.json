@@ -3,5 +3,6 @@
   "dest": "../../dist/ngx-aside-ease",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "assets": ["src/lib/aside/ngx-directives.css"]
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {
   AsideContainerComponent,
   AsideComponent,
-  AsideCategoryDirective,
+  AsideItemDirective,
 } from '../public-api';
 import { AsideTitleDirective } from './aside/ngx-title.directive';
 
@@ -13,13 +13,13 @@ import { AsideTitleDirective } from './aside/ngx-title.directive';
     CommonModule,
     AsideContainerComponent,
     AsideComponent,
-    AsideCategoryDirective,
+    AsideItemDirective,
     AsideTitleDirective,
   ],
   exports: [
     AsideContainerComponent,
     AsideComponent,
-    AsideCategoryDirective,
+    AsideItemDirective,
     AsideTitleDirective,
   ],
 })

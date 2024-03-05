@@ -13,9 +13,9 @@ import {
   QueryList,
   ViewChild,
 } from '@angular/core';
-import { AsideService } from '../aside.service';
+import { InternalAsideService } from '../aside.service';
 import { Subject, debounceTime, fromEvent, takeUntil } from 'rxjs';
-import { AsideCategoryDirective } from './category.directive';
+import { AsideItemDirective } from './item.directive';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -35,20 +35,19 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() displayCollapsableIcon = true;
   @Input() asideAnimation = true;
   @Input() asideAnimationTiming = '0.3s ease-out';
-  // @Input() contentAnimation = true;
   @Input() enableResize = true;
   @Input() resizerColor = '#0095be';
   @Input() enableMarker = true;
   @Input() markerAnimation = true;
   @Input() markerAnimationTiming = '0.3s ease-out';
+  @Input() storePreference = true;
   @Input() updateUrl = true;
-  @Input() updateParamsUrl = { name: '' };
+  @Input() paramUrlName = 'name';
 
   userWidth = 0;
   showCollapsableIcon = false;
   asideIsOpen = true;
   responsiveMode = false;
-  minWidthComp = 0;
   asideContentTop = 0;
   destroy$ = new Subject<void>();
   asideFullWidthResponsive = false;
@@ -59,12 +58,12 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('asideContent') asideContent!: ElementRef<HTMLDivElement>;
   @ViewChild('resizer') resizer!: ElementRef<HTMLSpanElement>;
   @ViewChild('asideMarker') asideMarker!: ElementRef<HTMLSpanElement>;
-  @ContentChildren(AsideCategoryDirective)
-  items!: QueryList<AsideCategoryDirective>;
+  @ContentChildren(AsideItemDirective)
+  items!: QueryList<AsideItemDirective>;
 
   constructor(
     private element: ElementRef<HTMLDivElement>,
-    private asideService: AsideService,
+    private asideService: InternalAsideService,
     private router: Router,
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef
@@ -82,16 +81,8 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.resizer.nativeElement;
   }
 
-  get asideContentTopValue() {
-    return this.asideContent.nativeElement.getBoundingClientRect().top;
-  }
-
   get isResponsiveMode() {
     return this.responsiveMode;
-  }
-
-  set asideFullWidth(value: boolean) {
-    this.asideFullWidthResponsive = value;
   }
 
   ngOnInit() {
@@ -112,22 +103,12 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Add active class to the element so the user can overload it with custom styles.
-   */
-  addClassActiveToElement(element: HTMLElement) {
-    const prev = this.asideContent.nativeElement.querySelector('.active');
-    prev?.classList.remove('active');
-    element.classList.add('active');
-  }
-
-  /**
    * Retrieve the previous stored preference or take the width set.
    * Initialise CSS variables.
    */
   ngAfterViewInit() {
     this.userWidth =
       parseFloat(localStorage.getItem('user-width') || '') || this.width;
-    this.minWidthComp = this.minWidth || 0.1 * this.userWidth;
     this.updateMinWidthPercentDiff();
 
     this.native.style.setProperty('--min-width', `${this.minWidth}px`);
@@ -145,6 +126,15 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.enableResize) this.resize();
   }
 
+  /**
+   * Add active class to the element so the user can overload it with custom styles.
+   */
+  addClassActiveToElement(element: HTMLElement) {
+    const prev = this.asideContent.nativeElement.querySelector('.active');
+    prev?.classList.remove('active');
+    element.classList.add('active');
+  }
+
   reverseDisplay() {
     this.reverse = true;
     document.body.style.overflow = 'hidden';
@@ -152,7 +142,7 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Keep user choice for navigation.
-   * Not through the Angular API for a synchronous reason. Give priority to the user choice over the default active item.
+   * Not through the Angular API for synchronous reason. Give priority to the user choice over the default active item.
    * Apply 100 ms delay, a custom font can be not fully loaded.
    */
   activateParamsUrl() {
@@ -161,7 +151,7 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     const currentUrl = window.location.href;
     const url = new URL(currentUrl);
     const params = new URLSearchParams(url.search);
-    const name = params.get('name')?.toLowerCase().trim() || '';
+    const name = params.get(this.paramUrlName)?.toLowerCase().trim() || '';
 
     const active = this.findTabToActivate(name);
 
@@ -180,6 +170,7 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
 
   findTabToActivate(active: string) {
     for (const item of this.items) {
+      if (item.disable) return null;
       const text = item.native.innerText.toLowerCase();
 
       if (active.toLowerCase().trim() === text) {
@@ -238,7 +229,8 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   positionMarker(element: HTMLElement, animated = this.markerAnimation) {
     if (!this.enableMarker) return;
 
-    this.asideContentTop = this.asideContentTopValue;
+    this.asideContentTop =
+      this.asideContent.nativeElement.getBoundingClientRect().top;
 
     const { top } = element.getBoundingClientRect();
     const topMarker = top - this.asideContentTop;
@@ -261,7 +253,7 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.keepUserNavigationChoice) return;
 
     for (const item of this.items) {
-      if (item.defaultActive) {
+      if (item.defaultActive && !item.disable) {
         setTimeout(() => {
           this.asideService.internalOnSelectionChange.next({
             element: item.native,
@@ -277,10 +269,9 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   updateUrlTabs(text: string) {
     if (!this.updateUrl) return;
 
-    this.updateParamsUrl.name = text;
     const newUrl = {
       ...this.route.snapshot.queryParams,
-      ...this.updateParamsUrl,
+      [this.paramUrlName]: text,
     };
     this.router.navigate([], { relativeTo: this.route, queryParams: newUrl });
   }
@@ -304,7 +295,7 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const onPointerMove = (e: PointerEvent) => {
       const pageX = this.reverse ? window.innerWidth - e.pageX : e.pageX;
-      if (pageX < this.minWidthComp) return;
+      if (pageX < this.minWidth) return;
       this.native.style.setProperty('--width', `${pageX}px`);
     };
 
@@ -314,7 +305,9 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
       );
       this.updateMinWidthPercentDiff();
 
-      localStorage.setItem('user-width', `${this.userWidth}px`);
+      if (this.storePreference) {
+        localStorage.setItem('user-width', `${this.userWidth}px`);
+      }
       document.removeEventListener('pointermove', onPointerMove);
     };
 

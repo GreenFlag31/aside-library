@@ -1,17 +1,18 @@
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
-import { AsideService } from '../aside.service';
+import { InternalAsideService } from '../aside.service';
 
 @Directive({
-  selector: '[ngxCategory]',
+  selector: '[ngxItem]',
   standalone: true,
-  host: { class: 'ngx-category' },
+  host: { class: 'ngx-item' },
 })
-export class AsideCategoryDirective {
+export class AsideItemDirective {
   @Input() defaultActive = false;
+  @Input() disable = false;
 
   constructor(
     private element: ElementRef<HTMLElement>,
-    private asideService: AsideService
+    private asideService: InternalAsideService
   ) {}
 
   get native() {
@@ -20,6 +21,8 @@ export class AsideCategoryDirective {
 
   @HostListener('click')
   onItemClick() {
+    if (this.disable) return;
+
     this.asideService.internalOnSelectionChange.next({
       element: this.native,
       animate: true,
