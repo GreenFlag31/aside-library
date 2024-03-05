@@ -12,7 +12,10 @@ import { AsideService } from '../aside.service';
   selector: 'ngx-aside-container',
   standalone: true,
   imports: [],
-  template: `<section class="ngx-aside-content-container">
+  template: `<section
+    class="ngx-aside-content-container"
+    [class.reversed]="reverse"
+  >
     <ng-content></ng-content>
   </section>`,
   styles: [
@@ -20,15 +23,21 @@ import { AsideService } from '../aside.service';
       .ngx-aside-content-container {
         display: flex;
       }
+      .ngx-aside-content-container.reversed {
+        flex-direction: row-reverse;
+        overflow-x: hidden;
+      }
     `,
   ],
 })
 export class AsideContainerComponent implements AfterViewInit {
+  @Input() reverse = false;
   @ContentChild(AsideComponent) aside!: AsideComponent;
 
   constructor(private asideService: AsideService) {}
 
   ngAfterViewInit() {
     this.asideService.addInstance(this);
+    if (this.reverse) this.aside.reverseDisplay();
   }
 }

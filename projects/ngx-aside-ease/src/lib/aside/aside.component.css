@@ -19,20 +19,26 @@
   transform: translate3d(var(--min-width-percent-diff), 0, 0);
   padding: 1rem 0;
 }
+.ngx-aside-wrapper.not-open.reversed {
+  transform: translate3d(0, 0, 0);
+}
 .ngx-aside-wrapper.responsive-mode {
-  /* transform: translate3d(0, 0, 0); */
   transform: translate3d(-100%, 0, 0);
   position: absolute;
   width: 0;
   overflow: hidden;
-  /* padding: 1rem 0; */
 }
-
 .ngx-aside-wrapper.full-width {
   transform: translate3d(0, 0, 0);
   padding: 1rem 0.7rem 0;
   width: 100%;
   z-index: 10;
+}
+.ngx-aside-wrapper.responsive-mode.reversed {
+  transform: translate3d(100%, 0, 0);
+}
+.ngx-aside-wrapper.full-width.reversed {
+  transform: translate3d(-100%, 0, 0);
 }
 
 .ngx-aside {
@@ -66,6 +72,10 @@
   touch-action: none;
   --resizer-color: #0095be;
 }
+.ngx-resizer.reversed {
+  right: auto;
+  left: -10px;
+}
 
 .ngx-resizer::after {
   content: "";
@@ -77,6 +87,10 @@
   transform: scaleX(0);
   opacity: 0;
   transition: 0.3s;
+}
+.ngx-resizer.reversed::after {
+  left: auto;
+  right: 0;
 }
 
 .ngx-resizer:not(.full-width):hover::after {
@@ -103,7 +117,11 @@ span.ngx-collapsable-icon {
   opacity: 0;
   z-index: 2;
 }
-
+span.ngx-collapsable-icon.reversed {
+  right: auto;
+  left: -12px;
+  transform: rotate(0);
+}
 span.ngx-collapsable-icon.responsive-mode {
   display: none;
 }
@@ -116,4 +134,7 @@ span.ngx-collapsable-icon.show {
 }
 span.ngx-collapsable-icon.not-open {
   transform: rotate(0);
+}
+span.ngx-collapsable-icon.not-open.reversed {
+  transform: rotate(180deg);
 }

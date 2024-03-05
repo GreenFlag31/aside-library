@@ -5,6 +5,7 @@
       'not-open': !asideIsOpen,
       'responsive-mode': responsiveMode,
       'full-width': asideFullWidthResponsive,
+      'reversed': reverse,
     }"
     (mouseenter)="onMouseEnter()"
     (mouseleave)="onMouseLeave()"
@@ -27,7 +28,8 @@
       [ngClass]="{
         show: showCollapsableIcon || !asideIsOpen,
         'not-open': !asideIsOpen,
-      'responsive-mode': responsiveMode,
+        'responsive-mode': responsiveMode,
+        'reversed': reverse,
       }"
       (click)="onCollapseBtnClick()"
     >
@@ -43,7 +45,8 @@
         class="ngx-resizer"
         [ngClass]="{
           'full-width': asideFullWidthResponsive,
-      'responsive-mode': responsiveMode,
+          'responsive-mode': responsiveMode,
+          'reversed': reverse,
         }"
         #resizer
       ></span>

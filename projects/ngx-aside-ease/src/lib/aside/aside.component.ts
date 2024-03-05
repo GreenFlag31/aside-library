@@ -53,6 +53,7 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   destroy$ = new Subject<void>();
   asideFullWidthResponsive = false;
   keepUserNavigationChoice = false;
+  reverse = false;
 
   @ViewChild('asideWrapper') asideWrapper!: ElementRef<HTMLDivElement>;
   @ViewChild('asideContent') asideContent!: ElementRef<HTMLDivElement>;
@@ -144,6 +145,11 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.enableResize) this.resize();
   }
 
+  reverseDisplay() {
+    this.reverse = true;
+    document.body.style.overflow = 'hidden';
+  }
+
   /**
    * Keep user choice for navigation.
    * Not through the Angular API for a synchronous reason. Give priority to the user choice over the default active item.
@@ -213,14 +219,9 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyAnimations(animate = true) {
-    // width ${this.asideAnimationTiming}, transform
-
     if (this.asideAnimation && animate) {
       this.native.style.transition = `width ${this.asideAnimationTiming}`;
       this.asideNative.style.transition = `${this.asideAnimationTiming}`;
-      // if (this.responsiveMode) {
-      //   this.asideNative.style.transition = `width ${this.asideAnimationTiming}, padding ${this.asideAnimationTiming}`;
-      // }
     } else if (!this.asideAnimation && !animate) {
       this.native.style.transition = 'none';
       this.asideNative.style.transition = 'none';
@@ -241,12 +242,14 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const { top } = element.getBoundingClientRect();
     const topMarker = top - this.asideContentTop;
+    const leftMarker = this.reverse ? '100%' : '0';
 
     this.asideMarker.nativeElement.style.height = element.clientHeight + 'px';
     this.asideMarker.nativeElement.style.transition = animated
       ? `top ${this.markerAnimationTiming}`
       : 'none';
     this.asideMarker.nativeElement.style.top = `${topMarker}px`;
+    this.asideMarker.nativeElement.style.left = `${leftMarker}`;
   }
 
   /**
@@ -300,8 +303,9 @@ export class AsideComponent implements OnInit, AfterViewInit, OnDestroy {
     this.native.style.transition = 'none';
 
     const onPointerMove = (e: PointerEvent) => {
-      if (e.pageX < this.minWidthComp) return;
-      this.native.style.setProperty('--width', `${e.pageX}px`);
+      const pageX = this.reverse ? window.innerWidth - e.pageX : e.pageX;
+      if (pageX < this.minWidthComp) return;
+      this.native.style.setProperty('--width', `${pageX}px`);
     };
 
     const onPointerUp = () => {
