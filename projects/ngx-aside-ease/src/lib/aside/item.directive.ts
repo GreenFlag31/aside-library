@@ -1,5 +1,6 @@
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
-import { InternalAsideService } from '../aside.service';
+import { InternalAsideService } from '../internal-aside.service';
+import { AsideService } from '../aside.service';
 
 @Directive({
   selector: '[ngxItem]',
@@ -12,7 +13,8 @@ export class AsideItemDirective {
 
   constructor(
     private element: ElementRef<HTMLElement>,
-    private asideService: InternalAsideService
+    private internalAsideService: InternalAsideService,
+    private asideService: AsideService
   ) {}
 
   get native() {
@@ -23,7 +25,7 @@ export class AsideItemDirective {
   onItemClick() {
     if (this.disable) return;
 
-    this.asideService.internalOnSelectionChange.next({
+    this.internalAsideService.internalOnSelectionChange.next({
       element: this.native,
       animate: true,
     });

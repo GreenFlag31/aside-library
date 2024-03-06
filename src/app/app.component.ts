@@ -8,7 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { AsideModule } from '../../projects/ngx-aside-ease/src/lib/aside.module';
-import { InternalAsideService } from '../../projects/ngx-aside-ease/src/public-api';
+import { AsideService } from '../../projects/ngx-aside-ease/src/lib/aside.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   view = 'ngx-aside-ease';
   @ViewChild('content') content!: ElementRef<HTMLDivElement>;
 
-  constructor(private asideService: InternalAsideService) {}
+  constructor(private asideService: AsideService) {}
 
   ngOnInit() {
     this.asideService.onSelectionChange.subscribe((item) => {

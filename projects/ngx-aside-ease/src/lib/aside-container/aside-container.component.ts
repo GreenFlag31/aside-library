@@ -6,7 +6,7 @@ import {
   Input,
 } from '@angular/core';
 import { AsideComponent } from '../aside/aside.component';
-import { InternalAsideService } from '../aside.service';
+import { InternalAsideService } from '../internal-aside.service';
 
 @Component({
   selector: 'ngx-aside-container',

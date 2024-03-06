@@ -40,7 +40,6 @@
 .ngx-aside-wrapper.full-width.reversed {
   transform: translate3d(-100%, 0, 0);
 }
-
 .ngx-aside {
   text-wrap: nowrap;
 }
@@ -48,11 +47,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  text-align: center;
   gap: 0.5rem;
   margin-top: 3rem;
-  /* overflow-y: auto;
-  max-height: 600px; */
 }
 .ngx-aside-marker {
   position: absolute;
