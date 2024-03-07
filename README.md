@@ -65,10 +65,10 @@ The components contain following options:
 | Selector            | Option                 | Default       | Description                                                                       |
 | ------------------- | ---------------------- | ------------- | --------------------------------------------------------------------------------- |
 | ngx-aside-container | reverse                | false         | Reverse the panel, setting it on the right of the page.                           |
-| ngx-aside           | minVisible             | 30            | The minimum panel width in pixels, triggered by a method (not manually).          |
+| ngx-aside           | minVisible             | 30            | The minimum visible panel width in pixels, triggered by a method (not manually).  |
 | ngx-aside           | minWidth               | 250           | The minimum panel width in pixels by dragging (Mouse or Touch event).             |
 | ngx-aside           | width                  | 300           | The width of the panel in pixels.                                                 |
-| ngx-aside           | maxWidth               | 50            | The maximum width of the panel in viewport width (vw).                            |
+| ngx-aside           | maxWidth               | 50            | The maximum width of the panel in viewport width (vw) by dragging.                |
 | ngx-aside           | responsiveBreakpoint   | 800           | The responsive breakpoint in pixels under which the responsive mode is triggered. |
 | ngx-aside           | displayCollapsableIcon | true          | Display the icon to collapse the panel.                                           |
 | ngx-aside           | asideAnimationTiming   | 0.3s ease-out | The panel animation shorthand CSS.                                                |
@@ -88,10 +88,6 @@ The ngxTitle directive is to place on your title (if any) and ngxCategory direct
 | ngxTitle  | defaultActive | false   | Set the default active item. |
 | ngxTitle  | disable       | false   | Disable the item.            |
 
-# Responsive
-
-This library is responsive and will automatically hide/display the panel according to the option `responsiveBreakpoint`.
-
 # AsideService
 
 This library exposes an `AsideService` which contains following method/property:
@@ -110,6 +106,10 @@ this.asideService.onSelectionChange.subscribe((item) => {
 ```
 
 \*The panel will either open partially or totally, depending on the responsive breakpoint set. The responsive breakpoint is set to 800px by default. Under 800px, triggering this method will either totally display/hide the panel. Above this threshold, the panel will be partially opened/hidden.
+
+# Responsive
+
+This library is responsive and will automatically hide/display the panel according to the option `responsiveBreakpoint`.
 
 # Style customisation
 
