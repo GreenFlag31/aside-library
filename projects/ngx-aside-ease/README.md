@@ -68,7 +68,7 @@ The components contain following options:
 | ngx-aside           | minVisible             | 30            | The minimum visible panel width in pixels, triggered by a method (not manually).  |
 | ngx-aside           | minWidth               | 250           | The minimum panel width in pixels by dragging (Mouse or Touch event).             |
 | ngx-aside           | width                  | 300           | The width of the panel in pixels.                                                 |
-| ngx-aside           | maxWidth               | 50            | The maximum width of the panel in viewport width (vw).                            |
+| ngx-aside           | maxWidth               | 50            | The maximum width of the panel in viewport width (vw) by dragging.                |
 | ngx-aside           | responsiveBreakpoint   | 800           | The responsive breakpoint in pixels under which the responsive mode is triggered. |
 | ngx-aside           | displayCollapsableIcon | true          | Display the icon to collapse the panel.                                           |
 | ngx-aside           | asideAnimationTiming   | 0.3s ease-out | The panel animation shorthand CSS.                                                |
